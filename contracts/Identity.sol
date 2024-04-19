@@ -161,6 +161,9 @@ contract Identity is Storage, IIdentity, Version {
     view
     returns(bytes32[] memory claimIds)
     {
+        if (_topic == 0) {
+            return _claimIds;
+        }
         return _claimsByTopic[_topic];
     }
 
@@ -367,7 +370,7 @@ contract Identity is Storage, IIdentity, Version {
         if (_claims[claimId].issuer != _issuer) {
             _claimsByTopic[_topic].push(claimId);
             _claims[claimId].issuer = _issuer;
-
+            _claimIds.push(claimId);
             emit ClaimAdded(claimId, _topic, _scheme, _issuer, _signature, _data, _uri);
         }
         else {
@@ -424,6 +427,20 @@ contract Identity is Storage, IIdentity, Version {
         );
 
         delete _claims[_claimId];
+
+
+        for (uint i = 0; i < _claimIds.length; i++) {
+            if (_claimIds[i] == _claimId) {
+                // Move the last element into the position to be removed
+                _claimIds[i] = _claimIds[_claimIds.length - 1];
+                // Remove the last element
+                _claimIds.pop();
+                // Exit the loop after removing the value
+                break;
+            }
+        }
+
+
 
         return true;
     }

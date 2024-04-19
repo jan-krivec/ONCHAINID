@@ -20,6 +20,8 @@ contract Storage is Structs {
 
     // claims held by the ONCHAINID
     mapping(bytes32 => Claim) internal _claims;
+    // array of claimIds
+    bytes32[] internal _claimIds;
 
     // array of claims for a given topic
     mapping(uint256 => bytes32[]) internal _claimsByTopic;
